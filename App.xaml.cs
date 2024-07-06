@@ -9,6 +9,7 @@ namespace PrTracker
     /// </summary>
     public partial class App : Application
     {
+
     }
 
 }
