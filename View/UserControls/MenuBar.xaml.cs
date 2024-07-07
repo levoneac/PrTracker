@@ -20,37 +20,12 @@ namespace PrTracker.View.UserControls
     /// <summary>
     /// Interaction logic for MenuBar.xaml
     /// </summary>
-    public partial class MenuBar : UserControl, INotifyPropertyChanged
+    public partial class MenuBar : UserControl
     {
         public MenuBar()
         {
-            DataContext = this;
             InitializeComponent();
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string username;
-
-        public string Username
-        {
-            get { return username; }
-            set
-            {
-                username = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Username"));
-                OnPropertyChanged();
-            }
-        }
-
-        private void OnPropertyChanged( [CallerMemberName] string? prop = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-
-        private void MenuItem_Click_FileNew(object sender, RoutedEventArgs e)
-        {
-           //
-        }
     }
 }

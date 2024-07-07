@@ -39,5 +39,10 @@ namespace PrTracker
             //running = !running;
 
         }
+
+        private void TrackerControl_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

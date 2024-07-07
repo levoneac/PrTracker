@@ -2,6 +2,7 @@
 using PrTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace PrTracker.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("connectionstring", options =>
+            optionsBuilder.UseSqlite(ConfigurationManager.ConnectionStrings["Default"].ConnectionString, options =>
             {
                 
             });

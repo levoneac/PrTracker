@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:UserControls="clr-namespace:PrTracker.View.UserControls"
         xmlns:local="clr-namespace:PrTracker"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -13,14 +15,16 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="60"/>
                 <RowDefinition />
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="30"/>
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             
             <!-- TOP MENU -->
-            <UserControls:MenuBar Grid.Row="0"/>
+            <UserControls:MenuBar Grid.Row="0" />
 
             <!-- MAIN DATA PANE -->
             <Grid Grid.Row="1">
@@ -53,9 +57,20 @@
 
             </Grid>
 
-            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+                <Button Content="Add" Width="50" Height="30" 
+                        Command="{Binding AddCommand}"/>
+                <Button Content="Delete" Width="50" Height="30"
+                        Command="{Binding DeleteCommand}"/>
+                <Button Content="Save" Width="50" Height="30"
+                        Command="{Binding SaveCommand}"/>
+            </StackPanel>
+
             <!-- FOOTER -->
-            <UserControls:Footer Grid.Row="2"/>
+            <UserControls:Footer Grid.Row="3"/>
+
+            <oxy:PlotView Grid.Row="4" Margin="5" Name="Plot1" Model="{Binding LiftModel}"/>
+
 
         </Grid>
         

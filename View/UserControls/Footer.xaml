@@ -22,7 +22,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Text="Fill in your name" FontSize="10" Height="15" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-            <TextBox Name="FillName" Height="10" FontSize="7" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" Grid.Row="1"/>
+            <TextBox Name="FillName" Height="10" FontSize="7" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1"/>
         </Grid>
     </Grid>
 </UserControl>
