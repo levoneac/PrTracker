@@ -83,11 +83,14 @@ namespace PrTracker.ViewModel
 
         private void AddItem()
         {
-            Items.Add(new MuscleGroup
+            MuscleGroup newItem = new MuscleGroup
             {
                 Id = 0,
                 MuscleGroupName = "Placeholder",
-            });
+            };
+
+            Items.Add(newItem);
+            SelectedItem = newItem;
         }
 
         private void DeleteItem()

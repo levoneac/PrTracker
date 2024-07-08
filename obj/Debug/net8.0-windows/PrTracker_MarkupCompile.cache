@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\App.xaml
-3-1116226627
+4-917972228
 
-24198190001
+25-624397222
 255918757349
-MainWindow.xaml;View\UserControls\Footer.xaml;View\UserControls\MenuBar.xaml;
+MainWindow.xaml;View\UserControls\DataEditor.xaml;View\UserControls\Footer.xaml;View\UserControls\MenuBar.xaml;
 
 False
 

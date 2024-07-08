@@ -181,3 +181,5 @@ C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Micro
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.EventSource.dll
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\LiftDB.db
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\obj\Debug\net8.0-windows\View\UserControls\DataEditor.g.cs
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\obj\Debug\net8.0-windows\View\UserControls\DataEditor.baml
