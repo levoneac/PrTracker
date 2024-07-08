@@ -1,0 +1,33 @@
+﻿<Window x:Class="PrTracker.View.AddNewLiftType"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PrTracker.View"
+        mc:Ignorable="d"
+        Title="AddNewLiftType" Height="200" Width="450">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding XXX}" FontSize="20" />
+        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <Label Content="Primary muscle group" />
+            <ComboBox ItemsSource="{Binding ExistingMuscleGroups}"
+                      SelectedItem="{Binding SelectedMuscleGroup.Primary, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                      IsEditable="False" IsReadOnly="True"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <Label Content="Secondary muscle group" />
+            <ComboBox ItemsSource="{Binding ExistingMuscleGroups}"
+                      SelectedItem="{Binding SelectedMuscleGroup.Secondary, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                      IsEditable="False" IsReadOnly="True"/>
+        </StackPanel>
+        <Button Grid.Row="3" Width="100" Height="30" Margin="10"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Content="Save" Command="{Binding AddNewLiftCommand}"/>
+    </Grid>
+</Window>

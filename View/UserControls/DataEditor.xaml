@@ -9,9 +9,9 @@
     <Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="65*"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="35*"/>
             </Grid.ColumnDefinitions>
 
             <DataGrid
@@ -22,10 +22,11 @@
                 Margin="5"
         >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Lift" Binding="{Binding Id}" Width="35*"/>
-                    <DataGridTextColumn Header="Weight" Binding="{Binding MuscleGroupName}" Width="15*"/>
-                    <DataGridTextColumn Header="Reps" Binding="{Binding MuscleGroupName}" Width="15*"/>
-                    <DataGridTextColumn Header="Date" Binding="{Binding MuscleGroupName}" Width="35*"/>
+                    <DataGridTextColumn Header="Lift" Binding="{Binding LiftName}" Width="30*"/>
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="15*"/>
+                    <DataGridTextColumn Header="Reps" Binding="{Binding Reps}" Width="10*"/>
+                    <DataGridTextColumn Header="Muscle group" Binding="{Binding PrimaryMuscleGroup}" Width="25*"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="20*" HeaderStringFormat=""/>
                 </DataGrid.Columns>
             </DataGrid>
             
@@ -42,13 +43,17 @@
                 <ScrollViewer>
                     <StackPanel Grid.Row="0">
                         <Label Content="Lift"/>
-                        <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox ItemsSource="{Binding ExistingLifts, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                  SelectedItem="{Binding SelectedItem.LiftName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                  IsEditable="True" IsReadOnly="False"/>
+                        <!-- <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/> -->
                         <Label Content="Weight"/>
-                        <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding SelectedItem.Weight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <Label Content="Reps"/>
-                        <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding SelectedItem.Reps, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <Label Content="Date"/>
-                        <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DatePicker SelectedDateFormat="Short" FirstDayOfWeek="Monday"
+                                    Text="{Binding SelectedItem.Date, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     </StackPanel>
                 </ScrollViewer>
 

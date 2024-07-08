@@ -14,49 +14,25 @@ namespace PrTracker.ViewModel
     {
         RelayCommand AddCommand { get; }
         RelayCommand DeleteCommand { get; }
-        ObservableCollection<MuscleGroup> Items { get; set; }
+        ObservableCollection<ShownLiftData> Items { get; set; }
         RelayCommand SaveCommand { get; }
-        MuscleGroup SelectedItem { get; set; }
-        string Username { get; set; }
+        ShownLiftData SelectedItem { get; set; }
+        ObservableCollection<string> ExistingLifts { get; set; }
+        public string SelectedLift {  get; set; }
     }
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     {
-        public ObservableCollection<MuscleGroup> Items { get; set; }
+        public ObservableCollection<ShownLiftData> Items { get; set; }
 
         public RelayCommand AddCommand => new RelayCommand(execute => AddItem()); //, canExecute => { return true; });
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteItem(), canExecute => selectedItem != null);
         public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
 
-
-        public MainWindowViewModel(LiftContext DB)
-        {
- 
-            dB = DB;
-            //MuscleGroups m = new MuscleGroups()
-            //{
-            //    Id = 15,
-            //    PrimaryMuscleGroup = "test",
-            //};
-            //
-            //dB.MuscleGroups.Add(m);
-            //dB.SaveChanges();
-
-            Trace.WriteLine($"DBDATA: {dB.MuscleGroups.Where(l => l.Id == 1).FirstOrDefault()}.");
-            Trace.WriteLine($"ISSQLITE: {dB.Database.IsSqlite()}");
-            Trace.WriteLine($"Db: {dB.MuscleGroups.FromSql($"SELECT * FROM MuscleGroups").First()}");
-
-            Items = new ObservableCollection<MuscleGroup>();
-            dB.MuscleGroups.ToList().ForEach(i => Items.Add(new MuscleGroup{
-                Id = i.Id,
-                MuscleGroupName = i.PrimaryMuscleGroup
-            }));
-        }
-      
         private readonly LiftContext dB;
 
-        private MuscleGroup selectedItem;
-        public MuscleGroup SelectedItem
+        private ShownLiftData selectedItem;
+        public ShownLiftData SelectedItem
         {
             get { return selectedItem; }
             set
@@ -66,29 +42,74 @@ namespace PrTracker.ViewModel
             }
         }
 
-        private string username;
+        private ObservableCollection<string> existingLifts;
 
-        public string Username
+        public ObservableCollection<string> ExistingLifts
         {
-            get { return username; }
+            get { return existingLifts; }
             set
             {
-                username = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Username"));
+                existingLifts = value;
                 OnPropertyChanged();
             }
         }
+
+        private string selectedLift;
+
+        public string SelectedLift
+        {
+            get { return selectedLift; }
+            set 
+            { 
+                selectedLift = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MainWindowViewModel(LiftContext DB)
+        {
+ 
+            dB = DB;
+
+            IQueryable<ShownLiftData> mainView = (from recorded in dB.RecordedLifts
+                            join liftTypes in dB.Lifts on recorded.Lift.Id equals liftTypes.Id
+                            where recorded.LifterId.Id == 2
+                            select new ShownLiftData
+                            {
+                                LiftName = liftTypes.LiftName,
+                                Weight = recorded.Weight,
+                                Reps = recorded.Reps,
+                                PrimaryMuscleGroup = liftTypes.PrimaryMuscleGroupId.Id,
+                                SecondaryMuscleGroup = liftTypes.SecondaryMuscleGroupId.Id,
+                                Date = recorded.DayOfLift
+                            });
+
+
+            Items = new ObservableCollection<ShownLiftData>();
+
+            foreach (ShownLiftData row in mainView)
+            {
+                Trace.WriteLine($"ROW: {row.ToString()}");
+                Items.Add(row);
+            }
+
+            ExistingLifts = new ObservableCollection<string>();
+            dB.Lifts.ToList().ForEach(i => ExistingLifts.Add(i.LiftName));
+        }
+      
+
+
 
 
 
         private void AddItem()
         {
-            MuscleGroup newItem = new MuscleGroup
+            ShownLiftData newItem = new ShownLiftData
             {
                 Id = 0,
                 MuscleGroupName = "Placeholder",
             };
-
+            
             Items.Add(newItem);
             SelectedItem = newItem;
         }
