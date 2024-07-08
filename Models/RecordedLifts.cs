@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace PrTracker.Models
 {
-    class RecordedLifts
+    [Table("RecordedLifts")]
+    public class RecordedLifts
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public LiftTypes Lift { get; set; } = null!;
+        public Lifts Lift { get; set; } = null!;
 
         [Required]
         public int Reps { get; set; }

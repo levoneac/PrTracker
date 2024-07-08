@@ -11,7 +11,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
         <Grid>
@@ -23,20 +22,6 @@
             </Menu>
         </Grid>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20*"/>
-                <ColumnDefinition Width="60*"/>
-                <ColumnDefinition Width="20*"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Name="tbStatus"  Text="{Binding Username}" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <TextBox Name="tbxTest" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" Grid.Column="1"/>
-            <TextBlock Name="tbName" Text="Placeholder Name" FontSize="15"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Grid.Column="2"
-                           TextWrapping="Wrap"/>
-        </Grid>
 
     </Grid>
 </UserControl>

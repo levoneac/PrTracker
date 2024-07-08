@@ -1,30 +1,66 @@
-﻿using PrTracker.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using OxyPlot;
+using PrTracker.Data;
+using PrTracker.Models;
+using PrTracker.Model;
 using PrTracker.MVVM;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows.Media;
 
 namespace PrTracker.ViewModel
 {
-    class MainWindowViewModel : ViewModelBase
+    public interface IMainWindowViewModel
     {
-        public ObservableCollection<ExampleItem> Items { get; set; }
+        RelayCommand AddCommand { get; }
+        RelayCommand DeleteCommand { get; }
+        ObservableCollection<MuscleGroup> Items { get; set; }
+        RelayCommand SaveCommand { get; }
+        MuscleGroup SelectedItem { get; set; }
+        string Username { get; set; }
+    }
+
+    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
+    {
+        public ObservableCollection<MuscleGroup> Items { get; set; }
 
         public RelayCommand AddCommand => new RelayCommand(execute => AddItem()); //, canExecute => { return true; });
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteItem(), canExecute => selectedItem != null);
         public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
 
 
-        public MainWindowViewModel() 
+        public MainWindowViewModel(LiftContext DB)
         {
-            Items = new ObservableCollection<ExampleItem>();
+ 
+            dB = DB;
+            //MuscleGroups m = new MuscleGroups()
+            //{
+            //    Id = 15,
+            //    PrimaryMuscleGroup = "test",
+            //};
+            //
+            //dB.MuscleGroups.Add(m);
+            //dB.SaveChanges();
+
+            Trace.WriteLine($"DBDATA: {dB.MuscleGroups.Where(l => l.Id == 1).FirstOrDefault()}.");
+            Trace.WriteLine($"ISSQLITE: {dB.Database.IsSqlite()}");
+            Trace.WriteLine($"Db: {dB.MuscleGroups.FromSql($"SELECT * FROM MuscleGroups").First()}");
+
+            Items = new ObservableCollection<MuscleGroup>();
+            dB.MuscleGroups.ToList().ForEach(i => Items.Add(new MuscleGroup{
+                Id = i.Id,
+                MuscleGroupName = i.PrimaryMuscleGroup
+            }));
         }
+      
+        private readonly LiftContext dB;
 
-        private ExampleItem selectedItem;
-
-        public ExampleItem SelectedItem
+        private MuscleGroup selectedItem;
+        public MuscleGroup SelectedItem
         {
             get { return selectedItem; }
-            set 
-            { 
+            set
+            {
                 selectedItem = value;
                 OnPropertyChanged();
             }
@@ -43,12 +79,14 @@ namespace PrTracker.ViewModel
             }
         }
 
+
+
         private void AddItem()
         {
-            Items.Add(new ExampleItem
+            Items.Add(new MuscleGroup
             {
                 Id = 0,
-                Name = "Placeholder",
+                MuscleGroupName = "Placeholder",
             });
         }
 

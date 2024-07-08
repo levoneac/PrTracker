@@ -167,3 +167,17 @@ C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Micro
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.CommandLine.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Diagnostics.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Hosting.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Configuration.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Console.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Debug.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.EventLog.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.EventSource.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\Mathias\source\repos\PrTracker\PrTracker\bin\Debug\net8.0-windows\LiftDB.db

@@ -17,7 +17,7 @@ namespace PrTracker.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
-            modelBuilder.Entity("PrTracker.Models.LiftTypes", b =>
+            modelBuilder.Entity("PrTracker.Models.Lifts", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -27,13 +27,34 @@ namespace PrTracker.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LiftType")
+                    b.Property<int>("PrimaryMuscleGroupIdId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SecondaryMuscleGroupIdId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrimaryMuscleGroupIdId");
+
+                    b.HasIndex("SecondaryMuscleGroupIdId");
+
+                    b.ToTable("Lifts", (string)null);
+                });
+
+            modelBuilder.Entity("PrTracker.Models.MuscleGroups", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PrimaryMuscleGroup")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("LiftTypes");
+                    b.ToTable("MuscleGroups", (string)null);
                 });
 
             modelBuilder.Entity("PrTracker.Models.People", b =>
@@ -51,7 +72,7 @@ namespace PrTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
                 });
 
             modelBuilder.Entity("PrTracker.Models.RecordedLifts", b =>
@@ -81,12 +102,29 @@ namespace PrTracker.Migrations
 
                     b.HasIndex("LifterIdId");
 
-                    b.ToTable("RecordedLifts");
+                    b.ToTable("RecordedLifts", (string)null);
+                });
+
+            modelBuilder.Entity("PrTracker.Models.Lifts", b =>
+                {
+                    b.HasOne("PrTracker.Models.MuscleGroups", "PrimaryMuscleGroupId")
+                        .WithMany()
+                        .HasForeignKey("PrimaryMuscleGroupIdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrTracker.Models.MuscleGroups", "SecondaryMuscleGroupId")
+                        .WithMany()
+                        .HasForeignKey("SecondaryMuscleGroupIdId");
+
+                    b.Navigation("PrimaryMuscleGroupId");
+
+                    b.Navigation("SecondaryMuscleGroupId");
                 });
 
             modelBuilder.Entity("PrTracker.Models.RecordedLifts", b =>
                 {
-                    b.HasOne("PrTracker.Models.LiftTypes", "Lift")
+                    b.HasOne("PrTracker.Models.Lifts", "Lift")
                         .WithMany("RecordedLifts")
                         .HasForeignKey("LiftId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -103,7 +141,7 @@ namespace PrTracker.Migrations
                     b.Navigation("LifterId");
                 });
 
-            modelBuilder.Entity("PrTracker.Models.LiftTypes", b =>
+            modelBuilder.Entity("PrTracker.Models.Lifts", b =>
                 {
                     b.Navigation("RecordedLifts");
                 });

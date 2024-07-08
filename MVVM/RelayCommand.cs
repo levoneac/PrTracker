@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace PrTracker.MVVM
 {
-    class RelayCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private Action<object> execute; //func with one param that cant return a value
         private Func<object, bool> canExecute; //func with one param that can return a value
