@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PrTracker.Model
 {
-    public class MuscleGroup
+    public class IdNameCombo
     {
         public int Id { get; set; }
-        public string MuscleGroupName { get; set; }
+        public string Name { get; set; }
     }
 }
