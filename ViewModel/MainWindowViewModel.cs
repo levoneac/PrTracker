@@ -29,8 +29,6 @@ namespace PrTracker.ViewModel
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteItem(), canExecute => selectedItem != null);
         public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
 
-        private readonly LiftContext dB;
-
         private ShownLiftData selectedItem;
         public ShownLiftData SelectedItem
         {
@@ -54,6 +52,15 @@ namespace PrTracker.ViewModel
             }
         }
 
+        private ObservableCollection<string> existingMuscleGroups;
+
+        public ObservableCollection<string> ExistingMuscleGroups
+        {
+            get { return existingMuscleGroups; }
+            set { existingMuscleGroups = value; }
+        }
+
+
         private string selectedLift;
 
         public string SelectedLift
@@ -66,48 +73,26 @@ namespace PrTracker.ViewModel
             }
         }
 
-        public MainWindowViewModel(LiftContext DB)
-        {
- 
-            dB = DB;
-
-            IQueryable<ShownLiftData> mainView = (from recorded in dB.RecordedLifts
-                            join liftTypes in dB.Lifts on recorded.Lift.Id equals liftTypes.Id
-                            where recorded.LifterId.Id == 2
-                            select new ShownLiftData
-                            {
-                                LiftName = liftTypes.LiftName,
-                                Weight = recorded.Weight,
-                                Reps = recorded.Reps,
-                                PrimaryMuscleGroup = liftTypes.PrimaryMuscleGroupId.Id,
-                                SecondaryMuscleGroup = liftTypes.SecondaryMuscleGroupId.Id,
-                                Date = recorded.DayOfLift
-                            });
+        public MainWindowViewModel(DBInteraction DBi)
+        { 
+            Items = DBi.GetShownLiftData();
+            ExistingLifts = DBi.GetExistingLiftTypes();
+            ExistingMuscleGroups = DBi.GetExistingMuscleGroups();
 
 
-            Items = new ObservableCollection<ShownLiftData>();
-
-            foreach (ShownLiftData row in mainView)
-            {
-                Trace.WriteLine($"ROW: {row.ToString()}");
-                Items.Add(row);
-            }
-
-            ExistingLifts = new ObservableCollection<string>();
-            dB.Lifts.ToList().ForEach(i => ExistingLifts.Add(i.LiftName));
         }
       
-
-
-
-
 
         private void AddItem()
         {
             ShownLiftData newItem = new ShownLiftData
             {
-                Id = 0,
-                MuscleGroupName = "Placeholder",
+                Id = Items.Last().Id + 1, //Probably just to keep track of newly added rows in the UI. DB should autoincrement so we dont clash
+                LiftName = ExistingLifts[0] ?? "Bench",
+                Weight = 0,
+                Reps = 0,
+                PrimaryMuscleGroup = 1, //get from liftname
+                Date = DateTime.Now
             };
             
             Items.Add(newItem);

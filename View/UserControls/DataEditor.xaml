@@ -43,9 +43,19 @@
                 <ScrollViewer>
                     <StackPanel Grid.Row="0">
                         <Label Content="Lift"/>
-                        <ComboBox ItemsSource="{Binding ExistingLifts, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90*"/>
+                                <ColumnDefinition Width="10*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox ItemsSource="{Binding ExistingLifts, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                   SelectedItem="{Binding SelectedItem.LiftName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                  IsEditable="True" IsReadOnly="False"/>
+                                  IsEditable="False" IsReadOnly="True"/>
+
+                            <Button Grid.Column="1" Content="+"
+                                    Command="{Binding AddNewLiftTypeCommand}"/>
+                        </Grid>
+
                         <!-- <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/> -->
                         <Label Content="Weight"/>
                         <TextBox Text="{Binding SelectedItem.Weight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>

@@ -8,6 +8,7 @@ namespace PrTracker.Model
 {
     public class ShownLiftData
     {
+        public int Id { get; set; }
         public string LiftName { get; set; }
         public decimal Weight { get; set; }
         public int Reps { get; set; }
