@@ -1,4 +1,5 @@
-﻿using PrTracker.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using PrTracker.Helpers;
 using PrTracker.Migrations;
 using PrTracker.Model;
 using PrTracker.Models;
@@ -141,6 +142,17 @@ namespace PrTracker.Data
             {
                 lift.IsNew = false;
             }
+            return true;
+        }
+        public bool DeleteSelectedLift(ShownLiftData data)
+        {
+            var findToDelete = dB.RecordedLifts.Where(i => i.Id == data.Id);
+            if(findToDelete is null || !findToDelete.Any()){
+                return false;
+            }
+            RecordedLifts liftToDelete = findToDelete.First();
+
+            dB.RecordedLifts.Remove(liftToDelete);
             return true;
         }
     }

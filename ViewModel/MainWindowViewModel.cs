@@ -155,6 +155,12 @@ namespace PrTracker.ViewModel
 
         private void DeleteItem()
         {
+            
+            if (!dbi.DeleteSelectedLift(selectedItem))
+            {
+                Trace.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRROOR");
+            }
+            dbi.dB.SaveChanges();
             MainLiftView.Remove(selectedItem);
         }
 
@@ -166,6 +172,7 @@ namespace PrTracker.ViewModel
                 Trace.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRROOR");
             }
             dbi.dB.SaveChanges();
+            SelectedItem = SelectedItem; //updates the property so that the UI greys out the already selected item after saving
             
         }
 
