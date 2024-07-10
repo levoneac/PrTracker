@@ -1,14 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OxyPlot;
-using PrTracker.Data;
-using PrTracker.Models;
+﻿using PrTracker.Data;
 using PrTracker.Model;
 using PrTracker.MVVM;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Media;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PrTracker.Helpers;
+using System.Windows.Input;
+using System.Text.RegularExpressions;
 
 namespace PrTracker.ViewModel
 {
@@ -40,6 +37,7 @@ namespace PrTracker.ViewModel
         public RelayCommand AddCommand => new RelayCommand(execute => AddItem()); //, canExecute => { return true; });
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteItem(), canExecute => selectedItem != null);
         public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
+
 
         private ShownLiftData selectedItem;
         public ShownLiftData SelectedItem
@@ -103,13 +101,13 @@ namespace PrTracker.ViewModel
         }
 
         public readonly DBInteraction dbi;
-        private readonly LiftToMuscleGroupRelations liftToMuscleGroupRelations;
+        private readonly LiftRelationConversions liftToMuscleGroupRelations;
 
         public MainWindowViewModel(DBInteraction DBi)
         {
             dbi = DBi;
             MainLiftView = dbi.GetShownLiftData();
-            liftToMuscleGroupRelations = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
+            liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
 
             //ON DB CHANGE EVENT
             ExistingLifts = dbi.GetExistingLiftTypes();
@@ -136,11 +134,12 @@ namespace PrTracker.ViewModel
             }
 
             KeyValuePair<string, string> muscleGroups = liftToMuscleGroupRelations.FromLiftToMuscleGroup(liftName);
-            
+
 
             ShownLiftData newItem = new ShownLiftData()
             {
-                LiftNameFK = liftNameFK, 
+                Id = -123, //Wont be sent. Can be used to check if item has been added in this sesion
+                LiftNameFK = liftNameFK,
                 LiftName = liftName,
                 Weight = 0,
                 Reps = 0,
@@ -168,7 +167,6 @@ namespace PrTracker.ViewModel
             }
             dbi.dB.SaveChanges();
             
-
         }
 
         private bool CanSave()
@@ -177,6 +175,9 @@ namespace PrTracker.ViewModel
             //is usser authenticated to save?
             return true;
         }
+
+
+ 
 
     }
 }

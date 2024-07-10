@@ -27,15 +27,16 @@
             <!-- TOP MENU -->
             <UserControls:MenuBar Grid.Row="0" />
 
-            <!-- MAIN DATA PANE -->
-            <UserControls:DataEditor Grid.Row="1"/>
+            <!-- DATA PLOT -->
+            <oxy:PlotView Grid.Row="2" Margin="5" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"/>
 
             <!-- RESIZER -->
             <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                           Background="LightSalmon" BorderBrush="Black" BorderThickness="1"/>
 
-            <!-- DATA PLOT -->
-            <oxy:PlotView Grid.Row="3" Margin="5" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"/>
+            <!-- MAIN DATA PANE -->
+            <UserControls:DataEditor Grid.Row="3"/>
+            
             
             <!-- FOOTER -->
             <UserControls:Footer Grid.Row="4"/>

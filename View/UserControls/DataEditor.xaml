@@ -28,6 +28,7 @@
                     <DataGridTextColumn Header="Muscle group" Binding="{Binding PrimaryMuscleGroup}" Width="25*"/>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="20*" HeaderStringFormat=""/>
                 </DataGrid.Columns>
+               
             </DataGrid>
             
             <!-- RESIZER -->
@@ -50,7 +51,7 @@
                             </Grid.ColumnDefinitions>
                             <ComboBox ItemsSource="{Binding ExistingLiftsValues, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                   SelectedItem="{Binding SelectedItem.LiftName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                  IsEditable="False" IsReadOnly="True"/>
+                                  IsEditable="False" IsReadOnly="True" IsEnabled="{Binding SelectedItem.IsNew}"/>
 
                             <Button Grid.Column="1" Content="+"
                                     Command="{Binding AddNewLiftTypeCommand}"/>
@@ -58,12 +59,12 @@
 
                         <!-- <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/> -->
                         <Label Content="Weight"/>
-                        <TextBox Text="{Binding SelectedItem.Weight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox Text="{Binding SelectedItem.Weight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsEnabled="{Binding SelectedItem.IsNew}"/>
                         <Label Content="Reps"/>
-                        <TextBox Text="{Binding SelectedItem.Reps, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox Text="{Binding SelectedItem.Reps, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsEnabled="{Binding SelectedItem.IsNew}"/>
                         <Label Content="Date"/>
                         <DatePicker SelectedDateFormat="Short" FirstDayOfWeek="Monday"
-                                    Text="{Binding SelectedItem.Date, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                    Text="{Binding SelectedItem.Date, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsEnabled="{Binding SelectedItem.IsNew}"/>
                     </StackPanel>
                 </ScrollViewer>
 

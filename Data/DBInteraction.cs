@@ -15,7 +15,7 @@ namespace PrTracker.Data
     {
 
         public readonly LiftContext dB;
-        private readonly LiftToMuscleGroupRelations liftToMuscleGroupRelations;
+        private readonly LiftRelationConversions liftToMuscleGroupRelations;
         private List<Lifts> liftTable;
 
         public List<Lifts> LiftTable
@@ -28,8 +28,9 @@ namespace PrTracker.Data
         public DBInteraction(LiftContext db)
         {
             dB = db;
-            liftToMuscleGroupRelations = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
+            liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             liftToMuscleGroupRelations.SetLiftToMuscleGroup(GetLiftToMuscleGroupRelations());
+            liftToMuscleGroupRelations.SetLiftToLiftFK(GetLiftToLliftFKRelations());
             LiftTable = dB.Lifts.ToList();
         }
 
@@ -63,27 +64,36 @@ namespace PrTracker.Data
             return intermediate.ToDictionary();
         }
 
+        public Dictionary<string, int> GetLiftToLliftFKRelations()
+        {
+            IQueryable<KeyValuePair<string, int>>? intermediate
+                = (from liftTypes in dB.Lifts
+                   select new KeyValuePair<string, int>(liftTypes.LiftName, liftTypes.Id));
+            return intermediate.ToDictionary();
+        }
+
         public ObservableCollection<ShownLiftData> GetShownLiftData()
         {
             ObservableCollection<ShownLiftData> data = new ObservableCollection<ShownLiftData>();
 
-            IQueryable<ShownLiftData> intermediate 
+            IQueryable<ShownLiftData> intermediate
                 = (from recorded in dB.RecordedLifts
-                    join liftTypes in dB.Lifts on recorded.Lift.Id equals liftTypes.Id
-                    join primaryMuscleGroups in dB.MuscleGroups on liftTypes.PrimaryMuscleGroupId.Id equals primaryMuscleGroups.Id
-                    join secondaryMuscleGroups in dB.MuscleGroups on liftTypes.SecondaryMuscleGroupId.Id equals secondaryMuscleGroups.Id
-                    where recorded.LifterId.Id == 2
-                    select new ShownLiftData
-                    {
-                        LiftNameFK = liftTypes.Id,
-                        LiftName = liftTypes.LiftName,
-                        Weight = recorded.Weight,
-                        Reps = recorded.Reps,
-                        PrimaryMuscleGroup = primaryMuscleGroups.PrimaryMuscleGroup,
-                        SecondaryMuscleGroup = secondaryMuscleGroups.PrimaryMuscleGroup,
-                        Date = recorded.DayOfLift,
-                        IsNew = false
-                    });
+                   join liftTypes in dB.Lifts on recorded.Lift.Id equals liftTypes.Id
+                   join primaryMuscleGroups in dB.MuscleGroups on liftTypes.PrimaryMuscleGroupId.Id equals primaryMuscleGroups.Id
+                   join secondaryMuscleGroups in dB.MuscleGroups on liftTypes.SecondaryMuscleGroupId.Id equals secondaryMuscleGroups.Id
+                   where recorded.LifterId.Id == 2
+                   select new ShownLiftData
+                   {
+                       Id = recorded.Id,
+                       LiftNameFK = liftTypes.Id,
+                       LiftName = liftTypes.LiftName,
+                       Weight = recorded.Weight,
+                       Reps = recorded.Reps,
+                       PrimaryMuscleGroup = primaryMuscleGroups.PrimaryMuscleGroup,
+                       SecondaryMuscleGroup = secondaryMuscleGroups.PrimaryMuscleGroup,
+                       Date = recorded.DayOfLift,
+                       IsNew = false
+                   });
             
 
             intermediate.ToList()
@@ -109,7 +119,7 @@ namespace PrTracker.Data
             foreach(ShownLiftData lift in newlyAdded)
             {
                 //Get lift to refer to
-                var lifts = dB.Lifts.Where(i => i.LiftName == lift.LiftName); //change to use FK
+                var lifts = dB.Lifts.Where(i => i.Id == lift.LiftNameFK); //change to use FK
                 if (lifts is null || !lifts.Any()) 
                 {
                     return false;

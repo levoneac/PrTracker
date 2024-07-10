@@ -12,11 +12,12 @@ namespace PrTracker.Model
 {
     public class ShownLiftData() : ViewModelBase
     {
-        private readonly LiftToMuscleGroupRelations liftToMuscleGroups = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
+        private readonly LiftRelationConversions liftRealtions = LiftRelationConversions.GetLiftToMuscleGroupRelations();
         private string liftName;
         private string primaryMuscleGroup;
         private string secondaryMuscleGroup;
 
+        public int Id { get; set; }
         public int LiftNameFK { get; set; }
         public string LiftName
         {
@@ -24,14 +25,39 @@ namespace PrTracker.Model
             set
             {
                 liftName = value;
-                PrimaryMuscleGroup = liftToMuscleGroups.FromLiftToMuscleGroup(value).Key;
-                SecondaryMuscleGroup = liftToMuscleGroups.FromLiftToMuscleGroup(value).Value;
+                PrimaryMuscleGroup = liftRealtions.FromLiftToMuscleGroup(value).Key;
+                SecondaryMuscleGroup = liftRealtions.FromLiftToMuscleGroup(value).Value;
+                LiftNameFK = liftRealtions.FromLiftToLiftFK(value);
 
                 OnPropertyChanged();
             }
         }
-        public decimal Weight { get; set; }
-        public int Reps { get; set; }
+
+        private decimal weight;
+
+        public decimal Weight
+        {
+            get { return weight; }
+            set 
+            { 
+                weight = value; 
+                OnPropertyChanged();
+            }
+        }
+
+
+        private int reps;
+
+        public int Reps
+        {
+            get { return reps; }
+            set 
+            { 
+                reps = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string PrimaryMuscleGroup
         {
             get { return primaryMuscleGroup; }
@@ -50,7 +76,18 @@ namespace PrTracker.Model
                 OnPropertyChanged();
             }
         }
-        public DateTime Date { get; set; }
+        private DateTime date;
+
+        public DateTime Date
+        {
+            get { return date; }
+            set 
+            { 
+                date = value; 
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsNew { get; set; }
     
     }
