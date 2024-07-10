@@ -1,4 +1,7 @@
-﻿using PrTracker.MVVM;
+﻿using PrTracker.Data;
+using PrTracker.Helpers;
+using PrTracker.MVVM;
+using PrTracker.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace PrTracker.Model
 {
-    public class ShownLiftData : ViewModelBase
+    public class ShownLiftData() : ViewModelBase
     {
+        private readonly LiftToMuscleGroupRelations liftToMuscleGroups = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
         private string liftName;
-        private int primaryMuscleGroup;
-        private int secondaryMuscleGroup;
+        private string primaryMuscleGroup;
+        private string secondaryMuscleGroup;
 
         public int LiftNameFK { get; set; }
         public string LiftName
@@ -20,13 +24,15 @@ namespace PrTracker.Model
             set
             {
                 liftName = value;
-                PrimaryMuscleGroup = 111;
+                PrimaryMuscleGroup = liftToMuscleGroups.FromLiftToMuscleGroup(value).Key;
+                SecondaryMuscleGroup = liftToMuscleGroups.FromLiftToMuscleGroup(value).Value;
+
                 OnPropertyChanged();
             }
         }
         public decimal Weight { get; set; }
         public int Reps { get; set; }
-        public int PrimaryMuscleGroup
+        public string PrimaryMuscleGroup
         {
             get { return primaryMuscleGroup; }
             set
@@ -35,7 +41,7 @@ namespace PrTracker.Model
                 OnPropertyChanged();
             }
         }
-        public int SecondaryMuscleGroup
+        public string SecondaryMuscleGroup
         {
             get { return secondaryMuscleGroup; }
             set

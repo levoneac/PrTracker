@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Media;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using PrTracker.Helpers;
 
 namespace PrTracker.ViewModel
 {
@@ -102,17 +103,18 @@ namespace PrTracker.ViewModel
         }
 
         public readonly DBInteraction dbi;
+        private readonly LiftToMuscleGroupRelations liftToMuscleGroupRelations;
 
         public MainWindowViewModel(DBInteraction DBi)
         {
             dbi = DBi;
-
             MainLiftView = dbi.GetShownLiftData();
-            ExistingLifts = dbi.GetExistingLiftTypes();
+            liftToMuscleGroupRelations = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
 
+            //ON DB CHANGE EVENT
+            ExistingLifts = dbi.GetExistingLiftTypes();
             ExistingLiftsValues = new ObservableCollection<string>();
             ExistingLifts.ToList().ForEach(i => ExistingLiftsValues.Add(i.Value));
-
             ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
         
             Trace.WriteLine($"KEY OF 2: {ExistingMuscleGroups.Where(i => i.Key == 2).First().Value}");
@@ -133,28 +135,17 @@ namespace PrTracker.ViewModel
                 liftNameFK = ExistingLifts[0].Key;
             }
 
-            int muscleGroup = 9;  //Default muscle group for deadlift which is normally the first lift
-            if (dbi.LiftTable.Count <= 0)
-            {
-                //Logic to add lift first?
-            }
-            else
-            {
-                var found = dbi.LiftTable.Where(i => i.LiftName == liftName);
-                if (found is not null && found.Any())
-                {
-                    muscleGroup = found.First().PrimaryMuscleGroupId.Id;
-                }
-                                           
-            }
+            KeyValuePair<string, string> muscleGroups = liftToMuscleGroupRelations.FromLiftToMuscleGroup(liftName);
+            
 
-            ShownLiftData newItem = new ShownLiftData
+            ShownLiftData newItem = new ShownLiftData()
             {
                 LiftNameFK = liftNameFK, 
                 LiftName = liftName,
                 Weight = 0,
                 Reps = 0,
-                PrimaryMuscleGroup = muscleGroup, //get from liftname
+                PrimaryMuscleGroup = muscleGroups.Key,
+                SecondaryMuscleGroup = muscleGroups.Value,
                 Date = DateTime.Now,
                 IsNew = true,
             };

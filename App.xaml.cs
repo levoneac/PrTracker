@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PrTracker.Data;
+using PrTracker.Helpers;
 using PrTracker.ViewModel;
 using System.Windows;
 
@@ -24,6 +25,7 @@ namespace PrTracker
                     services.AddSingleton<IMainWindowViewModel, MainWindowViewModel>();
                     services.AddSingleton<LiftContext>();
                     services.AddSingleton<DBInteraction>();
+                    services.AddSingleton<LiftToMuscleGroupRelations>();
                 })
                 .Build();
         }

@@ -1,4 +1,6 @@
-﻿using PrTracker.Model;
+﻿using PrTracker.Helpers;
+using PrTracker.Migrations;
+using PrTracker.Model;
 using PrTracker.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ namespace PrTracker.Data
     {
 
         public readonly LiftContext dB;
-
+        private readonly LiftToMuscleGroupRelations liftToMuscleGroupRelations;
         private List<Lifts> liftTable;
 
         public List<Lifts> LiftTable
@@ -26,6 +28,8 @@ namespace PrTracker.Data
         public DBInteraction(LiftContext db)
         {
             dB = db;
+            liftToMuscleGroupRelations = LiftToMuscleGroupRelations.GetLiftToMuscleGroupRelations();
+            liftToMuscleGroupRelations.SetLiftToMuscleGroup(GetLiftToMuscleGroupRelations());
             LiftTable = dB.Lifts.ToList();
         }
 
@@ -45,6 +49,20 @@ namespace PrTracker.Data
             return data;
         }
 
+        public Dictionary<string, KeyValuePair<string, string>> GetLiftToMuscleGroupRelations()
+        {
+            IQueryable<KeyValuePair<string, KeyValuePair<string, string>>> intermediate
+                = (from liftTypes in dB.Lifts
+                   join primaryMuscleGroups in dB.MuscleGroups on liftTypes.PrimaryMuscleGroupId.Id equals primaryMuscleGroups.Id
+                   join secondaryMuscleGroups in dB.MuscleGroups on liftTypes.SecondaryMuscleGroupId.Id equals secondaryMuscleGroups.Id
+                   select new KeyValuePair<string, KeyValuePair<string, string>>
+                   (
+                       liftTypes.LiftName,
+                       new KeyValuePair<string, string>(primaryMuscleGroups.PrimaryMuscleGroup, secondaryMuscleGroups.PrimaryMuscleGroup))
+                    );
+            return intermediate.ToDictionary();
+        }
+
         public ObservableCollection<ShownLiftData> GetShownLiftData()
         {
             ObservableCollection<ShownLiftData> data = new ObservableCollection<ShownLiftData>();
@@ -52,6 +70,8 @@ namespace PrTracker.Data
             IQueryable<ShownLiftData> intermediate 
                 = (from recorded in dB.RecordedLifts
                     join liftTypes in dB.Lifts on recorded.Lift.Id equals liftTypes.Id
+                    join primaryMuscleGroups in dB.MuscleGroups on liftTypes.PrimaryMuscleGroupId.Id equals primaryMuscleGroups.Id
+                    join secondaryMuscleGroups in dB.MuscleGroups on liftTypes.SecondaryMuscleGroupId.Id equals secondaryMuscleGroups.Id
                     where recorded.LifterId.Id == 2
                     select new ShownLiftData
                     {
@@ -59,16 +79,19 @@ namespace PrTracker.Data
                         LiftName = liftTypes.LiftName,
                         Weight = recorded.Weight,
                         Reps = recorded.Reps,
-                        PrimaryMuscleGroup = liftTypes.PrimaryMuscleGroupId.Id,
-                        SecondaryMuscleGroup = liftTypes.SecondaryMuscleGroupId.Id,
+                        PrimaryMuscleGroup = primaryMuscleGroups.PrimaryMuscleGroup,
+                        SecondaryMuscleGroup = secondaryMuscleGroups.PrimaryMuscleGroup,
                         Date = recorded.DayOfLift,
                         IsNew = false
                     });
+            
 
             intermediate.ToList()
                 .ForEach(data.Add);
             return data;
         }
+
+
 
         public bool SaveNewRecordedLifts(ObservableCollection<ShownLiftData> data)
         {
