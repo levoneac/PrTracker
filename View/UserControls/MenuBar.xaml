@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PrTracker.View.UserControls"
 
              mc:Ignorable="d" 
-             Height="60" d:DesignWidth="800">
+             Height="25" d:DesignWidth="800">
     
     <Grid>
         <Grid.RowDefinitions>

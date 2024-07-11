@@ -8,7 +8,7 @@
         xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PrTracker" Height="450" Width="800">
     <Grid>
 
         <Grid>
@@ -28,7 +28,8 @@
             <UserControls:MenuBar Grid.Row="0" />
 
             <!-- DATA PLOT -->
-            <oxy:PlotView Grid.Row="2" Margin="5" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"/>
+            <oxy:PlotView Grid.Row="1" Margin="5" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"
+                          Controller="{Binding CControl}"/>
 
             <!-- RESIZER -->
             <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

@@ -16,9 +16,9 @@ namespace PrTracker.Data
         public LiftContext()
         {
 
-           
-            Trace.WriteLine($"ENSURE CREATED: {Database.EnsureCreated()}");
-            //Database.Migrate();
+
+            Database.Migrate();
+            //Add automatic insertion on creation
         }
         public DbSet<Lifts> Lifts { get; set; } = null!;
         public DbSet<RecordedLifts> RecordedLifts { get; set; } = null!;

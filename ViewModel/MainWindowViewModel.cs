@@ -6,6 +6,9 @@ using System.Diagnostics;
 using PrTracker.Helpers;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
 
 namespace PrTracker.ViewModel
 {
@@ -100,6 +103,28 @@ namespace PrTracker.ViewModel
             }
         }
 
+        private PlotModel liftModel;
+
+        public PlotModel LiftModel
+        {
+            get { return liftModel; }
+            private set 
+            { 
+                liftModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PlotController cControl;
+
+        public PlotController CControl
+        {
+            get { return cControl; }
+            private set { cControl = value; }
+        }
+
+
+
         public readonly DBInteraction dbi;
         private readonly LiftRelationConversions liftToMuscleGroupRelations;
 
@@ -114,7 +139,49 @@ namespace PrTracker.ViewModel
             ExistingLiftsValues = new ObservableCollection<string>();
             ExistingLifts.ToList().ForEach(i => ExistingLiftsValues.Add(i.Value));
             ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
-        
+
+            LiftModel = new PlotModel
+            {
+                Title = "Lifts",
+            };
+
+            ScatterSeries scatterLifts = new ScatterSeries
+            {
+                MarkerType = MarkerType.Cross,
+                MarkerFill = OxyColors.Aqua,
+                MarkerStroke = OxyColors.DarkGreen,
+                MarkerSize = 4,
+                MarkerStrokeThickness = 5,
+            };
+
+            MainLiftView.Where(i => i.LiftName == "Overhead Press")
+                .ToList()
+                .ForEach(j => scatterLifts.Points.Add(new ScatterPoint(DateTimeAxis.ToDouble(j.Date), (double)j.Weight , 10)));
+            LiftModel.Series.Add(scatterLifts);
+            
+            LiftModel.Axes.Add(new DateTimeAxis
+            {
+                Position = AxisPosition.Bottom,
+                Minimum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(-10)),
+                Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(20))
+            });
+            LiftModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Minimum = 0,
+                Maximum = 100
+
+            });
+
+            CControl = new PlotController();
+            CControl.UnbindMouseDown(OxyMouseButton.Left);
+            CControl.BindMouseEnter(PlotCommands.HoverSnapTrack);
+
+            
+
+            
+
+
             Trace.WriteLine($"KEY OF 2: {ExistingMuscleGroups.Where(i => i.Key == 2).First().Value}");
         }
       
@@ -155,7 +222,6 @@ namespace PrTracker.ViewModel
 
         private void DeleteItem()
         {
-            
             if (!dbi.DeleteSelectedLift(selectedItem))
             {
                 Trace.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRROOR");
