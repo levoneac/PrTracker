@@ -14,7 +14,7 @@ namespace PrTracker.Data
 {
     public class DBInteraction
     {
-
+        public static event EventHandler<string> DbUpdateEvent;
         public readonly LiftContext dB;
         private readonly LiftRelationConversions liftToMuscleGroupRelations;
         private List<Lifts> liftTable;
@@ -142,6 +142,7 @@ namespace PrTracker.Data
             {
                 lift.IsNew = false;
             }
+            DbUpdateEvent?.Invoke(this, "DATA SAVED");
             return true;
         }
         public bool DeleteSelectedLift(ShownLiftData data)

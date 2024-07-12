@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using PrTracker.Graph;
 
 namespace PrTracker.ViewModel
 {
@@ -131,60 +132,37 @@ namespace PrTracker.ViewModel
         public MainWindowViewModel(DBInteraction DBi)
         {
             dbi = DBi;
-            MainLiftView = dbi.GetShownLiftData();
-            liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
-
-            //ON DB CHANGE EVENT
-            ExistingLifts = dbi.GetExistingLiftTypes();
             ExistingLiftsValues = new ObservableCollection<string>();
-            ExistingLifts.ToList().ForEach(i => ExistingLiftsValues.Add(i.Value));
-            ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
+            liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
+            MainLiftView = dbi.GetShownLiftData();
 
-            LiftModel = new PlotModel
-            {
-                Title = "Lifts",
-            };
+            DBInteraction.DbUpdateEvent += DBi_DbUpdateEvent;
+            UpdateInfoFromDatabase();
 
-            ScatterSeries scatterLifts = new ScatterSeries
-            {
-                MarkerType = MarkerType.Cross,
-                MarkerFill = OxyColors.Aqua,
-                MarkerStroke = OxyColors.DarkGreen,
-                MarkerSize = 4,
-                MarkerStrokeThickness = 5,
-            };
 
-            MainLiftView.Where(i => i.LiftName == "Overhead Press")
-                .ToList()
-                .ForEach(j => scatterLifts.Points.Add(new ScatterPoint(DateTimeAxis.ToDouble(j.Date), (double)j.Weight , 10)));
-            LiftModel.Series.Add(scatterLifts);
-            
-            LiftModel.Axes.Add(new DateTimeAxis
-            {
-                Position = AxisPosition.Bottom,
-                Minimum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(-10)),
-                Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(20))
-            });
-            LiftModel.Axes.Add(new LinearAxis
-            {
-                Position = AxisPosition.Left,
-                Minimum = 0,
-                Maximum = 100
 
-            });
 
-            CControl = new PlotController();
-            CControl.UnbindMouseDown(OxyMouseButton.Left);
-            CControl.BindMouseEnter(PlotCommands.HoverSnapTrack);
 
-            
 
-            
 
 
             Trace.WriteLine($"KEY OF 2: {ExistingMuscleGroups.Where(i => i.Key == 2).First().Value}");
         }
-      
+
+        public void UpdateInfoFromDatabase()
+        {
+            ExistingLifts = dbi.GetExistingLiftTypes();
+            ExistingLifts.ToList().ForEach(i => ExistingLiftsValues.Add(i.Value));
+            ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
+        }
+
+        private void DBi_DbUpdateEvent(object? sender, string e)
+        {
+            Trace.WriteLine(e);
+            UpdateInfoFromDatabase();
+            Trace.WriteLine("UI UPDATED");
+        }
+
         private void AddItem()
         {
             string liftName;
