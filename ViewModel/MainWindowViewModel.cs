@@ -10,6 +10,7 @@ using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
 using PrTracker.Graph;
+using PrTracker.EventArguments;
 
 namespace PrTracker.ViewModel
 {
@@ -27,6 +28,36 @@ namespace PrTracker.ViewModel
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     {
+        public event EventHandler<GraphCategoryChangeArgs> GraphCategoryChangeEvent;
+
+        private bool isOneRepMax = false;
+
+        public bool IsOneRepMax
+        {
+            get { return isOneRepMax; }
+            set 
+            { 
+                isOneRepMax = value;
+                OnPropertyChanged();
+                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift));
+            }
+        }
+
+        private string graphCurrentSelectedLift = "Bench";
+
+        public string GraphCurrentSelectedLift
+        {
+            get { return graphCurrentSelectedLift; }
+            set 
+            { 
+                graphCurrentSelectedLift = value;
+                OnPropertyChanged();
+                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift));
+            }
+        }
+
+
+
         private ObservableCollection<ShownLiftData> mainLiftView;
         public ObservableCollection<ShownLiftData> MainLiftView
         {
@@ -126,12 +157,16 @@ namespace PrTracker.ViewModel
 
 
 
-        public readonly DBInteraction dbi;
+        private readonly DBInteraction dbi;
         private readonly LiftRelationConversions liftToMuscleGroupRelations;
+        private readonly LiftGraph Graph;
 
         public MainWindowViewModel(DBInteraction DBi)
         {
             dbi = DBi;
+            Graph = new LiftGraph(this);
+
+
             ExistingLiftsValues = new ObservableCollection<string>();
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             MainLiftView = dbi.GetShownLiftData();
@@ -160,6 +195,7 @@ namespace PrTracker.ViewModel
         {
             Trace.WriteLine(e);
             UpdateInfoFromDatabase();
+            Graph.UpdateData(MainLiftView);
             Trace.WriteLine("UI UPDATED");
         }
 

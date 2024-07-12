@@ -1,14 +1,8 @@
-﻿using OxyPlot.Axes;
-using OxyPlot.Series;
+﻿using OxyPlot.Series;
 using OxyPlot;
 using PrTracker.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using PrTracker.ViewModel;
 using PrTracker.Data;
 
 namespace PrTracker.Graph
@@ -19,34 +13,39 @@ namespace PrTracker.Graph
         private IQueryable<string> Placeholder {  get; set; }
         public ILookup<string, ShownLiftData> GroupedLiftDataByName { get; set; }
 
-        public LiftGraph(ObservableCollection<ShownLiftData> liftData) 
+        public LiftGraph(MainWindowViewModel vm) 
         {
+            vm.GraphCategoryChangeEvent += ViewModel_GraphCategoryChangeEvent;
+
+
             InteractionController = new PlotController();
             InteractionController.UnbindMouseDown(OxyMouseButton.Left);
             InteractionController.BindMouseEnter(PlotCommands.HoverSnapTrack);
-
-            GroupedLiftDataByName = liftData.ToLookup(i => i.LiftName);
-           
-
-            DBInteraction.DbUpdateEvent += DBInteraction_DbUpdateEvent;
-
-            //liftData.Where(i => i.LiftName == "Overhead Press")
-            //    .ToList()
-            //    .ForEach(j => scatterLifts.Points.Add(new ScatterPoint(DateTimeAxis.ToDouble(j.Date), (double)j.Weight, 10)));
-            //model.Series.Add(scatterLifts);
-
+            
+                       
         }
 
-        private void DBInteraction_DbUpdateEvent(object? sender, string e)
+
+        private void ViewModel_GraphCategoryChangeEvent(object? sender, EventArguments.GraphCategoryChangeArgs e)
         {
-            //Should i just recalculate all? or should i try to insert them in the grooups
+            //throw new NotImplementedException();
 
-            //E1:
-            //newlifts.tolookup
-            //foreach lift in newlifts
-            //  GRoupedByLiftName[lift].add(lift)
-            throw new NotImplementedException();
+            //set GroupedLiftDataByName to the appropriate Graph
+
         }
+
+        //Needs tp be called in mainview when database update has happened
+        public void UpdateData(ObservableCollection<ShownLiftData> liftData)
+        {
+            GroupedLiftDataByName = liftData.ToLookup(i => i.LiftName);
+        }
+
+        public IEnumerable<ShownLiftData> GetLiftCategoryByName(string name)
+        {
+            return GroupedLiftDataByName[name];
+        }
+
+        
 
         public class Scatter
         {

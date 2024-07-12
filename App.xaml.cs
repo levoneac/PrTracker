@@ -26,9 +26,7 @@ namespace PrTracker
                     services.AddSingleton<IMainWindowViewModel, MainWindowViewModel>();
                     services.AddSingleton<LiftContext>();
                     services.AddSingleton<DBInteraction>();
-                    services.AddSingleton<LiftRelationConversions>();
-                    services.AddSingleton<LiftGraph>();
-                    
+                    services.AddSingleton<LiftRelationConversions>();                
                 })
                 .Build();
         }

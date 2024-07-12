@@ -14,7 +14,10 @@ namespace PrTracker.Data
 {
     public class DBInteraction
     {
+        //change this to proper class
         public static event EventHandler<string> DbUpdateEvent;
+
+
         public readonly LiftContext dB;
         private readonly LiftRelationConversions liftToMuscleGroupRelations;
         private List<Lifts> liftTable;
@@ -119,12 +122,26 @@ namespace PrTracker.Data
 
             foreach(ShownLiftData lift in newlyAdded)
             {
+                IQueryable<Lifts> lifts;
                 //Get lift to refer to
-                var lifts = dB.Lifts.Where(i => i.Id == lift.LiftNameFK); //change to use FK
-                if (lifts is null || !lifts.Any()) 
+                //If we failed to set LiftNameFK, we can also rely on the LiftName, which should also be unique
+                if(lift.LiftNameFK == -1)
                 {
-                    return false;
+                    lifts = dB.Lifts.Where(i => i.LiftName == lift.LiftName); 
+                    if (lifts is null || !lifts.Any())
+                    {
+                        return false;
+                    }
                 }
+                else
+                {
+                    lifts = dB.Lifts.Where(i => i.Id == lift.LiftNameFK); 
+                    if (lifts is null || !lifts.Any())
+                    {
+                        return false;
+                    }
+                }
+
                 Lifts liftFK = lifts.First();
 
                 dB.RecordedLifts.Add(new RecordedLifts
