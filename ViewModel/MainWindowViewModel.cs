@@ -11,6 +11,7 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using PrTracker.Graph;
 using PrTracker.EventArguments;
+using static PrTracker.Graph.LiftGraph;
 
 namespace PrTracker.ViewModel
 {
@@ -176,23 +177,30 @@ namespace PrTracker.ViewModel
             CControl = Graph.InteractionController;
             Graph.UpdateData(MainLiftView);
             GraphCategoryChangeEvent += Handle_GraphCategoryChangeEvent;
-            LiftModel = Graph.MakeLiftModel(LiftGraph.GraphType.AllLifts, GraphCurrentSelectedLift);
+            LiftModel = Graph.MakeLiftModel(GraphType.AllLifts, GraphCurrentSelectedLift);
 
         }
 
         //Maybe this doesnt need to be an event, but make code feel more intuitive
         private void Handle_GraphCategoryChangeEvent(object? sender, GraphCategoryChangeArgs e)
         {
-            LiftGraph.GraphType graphType;
-            if (e.IsOneRepMax)
+            GraphType graphType = GetLiftGraphType(e.IsOneRepMax);
+
+            LiftModel = Graph.MakeLiftModel(graphType, e.LiftName);
+        }
+
+        private GraphType GetLiftGraphType(bool isOneRepMax)
+        {
+            GraphType graphType;
+            if (isOneRepMax)
             {
-                graphType = LiftGraph.GraphType.OneRepMax;
+                graphType = GraphType.OneRepMax;
             }
             else
             {
-                graphType = LiftGraph.GraphType.AllLifts;
+                graphType = GraphType.AllLifts;
             }
-            LiftModel = Graph.MakeLiftModel(graphType, e.LiftName);
+            return graphType;
         }
 
         public void UpdateInfoFromDatabase()
@@ -209,7 +217,7 @@ namespace PrTracker.ViewModel
 
             //A lot of double work here. Look into later
             Graph.UpdateData(MainLiftView);
-            LiftModel = Graph.MakeLiftModel(LiftGraph.GraphType.AllLifts, GraphCurrentSelectedLift);
+            LiftModel = Graph.MakeLiftModel(GetLiftGraphType(IsOneRepMax), GraphCurrentSelectedLift);
             Trace.WriteLine("UI UPDATED");
         }
 

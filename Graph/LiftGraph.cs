@@ -14,6 +14,10 @@ namespace PrTracker.Graph
         private PlotModel LiftModel {  get; set; }
         private ILookup<string, ShownLiftData> GroupedLiftDataByName { get; set; }
 
+
+        public delegate double OneRepMaxFormula(double weight, int reps);
+        public OneRepMaxFormula? ORMForumula { get; set; }
+
         public enum GraphType
         {
             OneRepMax,
@@ -25,6 +29,7 @@ namespace PrTracker.Graph
             InteractionController = new PlotController();
             InteractionController.UnbindMouseDown(OxyMouseButton.Left);
             InteractionController.BindMouseEnter(PlotCommands.HoverSnapTrack);
+ 
         }
 
 
@@ -37,7 +42,10 @@ namespace PrTracker.Graph
             IEnumerable<ShownLiftData> data = GroupedLiftDataByName[liftName];
             if (type == GraphType.AllLifts)
             {
-                ScatterSeries scatterSeries = new ScatterSeries();
+                ScatterSeries scatterSeries = new ScatterSeries()
+                {
+                    MarkerType = MarkerType.Circle,
+                };
                 foreach (ShownLiftData lift in data)
                 {
                     scatterSeries.Points.Add(new ScatterPoint(lift.Reps, (double)lift.Weight));
@@ -64,10 +72,14 @@ namespace PrTracker.Graph
             }
             else if (type == GraphType.OneRepMax)
             {
-                LineSeries lineSeries = new LineSeries();
+                LineSeries lineSeries = new LineSeries()
+                {
+
+                };
                 foreach (ShownLiftData lift in data)
                 {
-                    lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(lift.Date), (double)lift.Weight));
+                    double oneRepMax = CalculateOneRepMax((double)lift.Weight, lift.Reps);
+                    lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(lift.Date), oneRepMax));
                 }
                 newModel.Series.Add(lineSeries);
 
@@ -76,8 +88,9 @@ namespace PrTracker.Graph
                     Title = "Date",
                     Position = AxisPosition.Bottom,
                     MinimumDataMargin = 5,
-                    MaximumDataMargin = 5
-                    
+                    MaximumDataMargin = 5,
+                    StringFormat = "MM/dd/yyyy"
+
                 });
                 newModel.Axes.Add(new LinearAxis
                 {
@@ -90,8 +103,19 @@ namespace PrTracker.Graph
             
             return newModel;
         }
-       
 
+        private double CalculateOneRepMax(double weight, int reps)
+        {
+            if(weight < 0 || reps < 0)
+            {
+                return 0;
+            }
+            if(ORMForumula is null)
+            {
+                return weight * (1 + (0.025 * reps));
+            }
+            return ORMForumula(weight, reps);
+        }
 
 
         //Needs tp be called in mainview when database update has happened
@@ -107,57 +131,6 @@ namespace PrTracker.Graph
                 return GroupedLiftDataByName[name];
             }
             return Enumerable.Empty<ShownLiftData>();
-        }
-
-        
-
-        private class Scatter
-        {
-            public ScatterSeries PlotSerie { get; set; }
-            public Scatter()
-            {
-                PlotModel model = new PlotModel
-                {
-                    Title = "All recorded lifts",
-                };
-
-                ScatterSeries scatterLifts = new ScatterSeries
-                {
-                    MarkerType = MarkerType.Cross,
-                    MarkerFill = OxyColors.Aqua,
-                    MarkerStroke = OxyColors.DarkGreen,
-                    MarkerSize = 4,
-                    MarkerStrokeThickness = 5,
-                };
-            }
-        }
-
-        private class OneRepMaxProgression
-        {
-            public LineSeries PlotSerie { get; set; }
-
-            public OneRepMaxProgression()
-            {
-                PlotModel model = new PlotModel
-                {
-                    Title = "One rep max progression",
-                };
-            }
-
-            //model.Axes.Add(new DateTimeAxis
-            //{
-            //    Position = AxisPosition.Bottom,
-            //    Minimum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(-10)),
-            //    Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddDays(20))
-            //});
-            //model.Axes.Add(new LinearAxis
-            //{
-            //    Position = AxisPosition.Left,
-            //    Minimum = 0,
-            //    Maximum = 100
-            //});
-
-
         }
     }
 }

@@ -7,14 +7,12 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="220" d:DesignWidth="800">
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="95*"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="95*"/>
         </Grid.RowDefinitions>
-        <oxy:PlotView Grid.Row="0" Margin="5" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"
-                      Controller="{Binding CControl}"/>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -36,10 +34,8 @@
                     <TextBlock Text="Estimated 1RM" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
-
-
-
         </Grid>
-        
+        <oxy:PlotView Grid.Row="1" Name="MainWindowProgressionPlot" Model="{Binding LiftModel}"
+                      Controller="{Binding CControl}"/>
     </Grid>
 </UserControl>
