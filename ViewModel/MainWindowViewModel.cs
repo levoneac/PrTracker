@@ -43,7 +43,7 @@ namespace PrTracker.ViewModel
             }
         }
 
-        private string graphCurrentSelectedLift = "Bench";
+        private string graphCurrentSelectedLift = "Deadlift";
 
         public string GraphCurrentSelectedLift
         {
@@ -135,6 +135,7 @@ namespace PrTracker.ViewModel
             }
         }
 
+
         private PlotModel liftModel;
 
         public PlotModel LiftModel
@@ -164,24 +165,34 @@ namespace PrTracker.ViewModel
         public MainWindowViewModel(DBInteraction DBi)
         {
             dbi = DBi;
-            Graph = new LiftGraph(this);
-
 
             ExistingLiftsValues = new ObservableCollection<string>();
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             MainLiftView = dbi.GetShownLiftData();
-
             DBInteraction.DbUpdateEvent += DBi_DbUpdateEvent;
             UpdateInfoFromDatabase();
 
+            Graph = new LiftGraph();
+            CControl = Graph.InteractionController;
+            Graph.UpdateData(MainLiftView);
+            GraphCategoryChangeEvent += Handle_GraphCategoryChangeEvent;
+            LiftModel = Graph.MakeLiftModel(LiftGraph.GraphType.AllLifts, GraphCurrentSelectedLift);
 
+        }
 
-
-
-
-
-
-            Trace.WriteLine($"KEY OF 2: {ExistingMuscleGroups.Where(i => i.Key == 2).First().Value}");
+        //Maybe this doesnt need to be an event, but make code feel more intuitive
+        private void Handle_GraphCategoryChangeEvent(object? sender, GraphCategoryChangeArgs e)
+        {
+            LiftGraph.GraphType graphType;
+            if (e.IsOneRepMax)
+            {
+                graphType = LiftGraph.GraphType.OneRepMax;
+            }
+            else
+            {
+                graphType = LiftGraph.GraphType.AllLifts;
+            }
+            LiftModel = Graph.MakeLiftModel(graphType, e.LiftName);
         }
 
         public void UpdateInfoFromDatabase()
@@ -195,7 +206,10 @@ namespace PrTracker.ViewModel
         {
             Trace.WriteLine(e);
             UpdateInfoFromDatabase();
+
+            //A lot of double work here. Look into later
             Graph.UpdateData(MainLiftView);
+            LiftModel = Graph.MakeLiftModel(LiftGraph.GraphType.AllLifts, GraphCurrentSelectedLift);
             Trace.WriteLine("UI UPDATED");
         }
 

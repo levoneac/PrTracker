@@ -14,8 +14,8 @@ namespace PrTracker.Data
 {
     public class DBInteraction
     {
-        //change this to proper class
-        public static event EventHandler<string> DbUpdateEvent;
+       
+        public static event EventHandler<string>? DbUpdateEvent;
 
 
         public readonly LiftContext dB;
@@ -159,7 +159,8 @@ namespace PrTracker.Data
             {
                 lift.IsNew = false;
             }
-            DbUpdateEvent?.Invoke(this, "DATA SAVED");
+            //static events should have null as the sender
+            DbUpdateEvent?.Invoke(null, "DATA SAVED");
             return true;
         }
         public bool DeleteSelectedLift(ShownLiftData data)

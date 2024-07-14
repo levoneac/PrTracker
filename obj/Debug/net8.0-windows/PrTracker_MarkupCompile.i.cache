@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\Mathias\source\repos\PrTracker\PrTracker\App.xaml
-51876196686
+6-964775411
 
-33-1311501874
+34-499268892
 255918757349
-MainWindow.xaml;View\AddNewLiftType.xaml;View\UserControls\DataEditor.xaml;View\UserControls\Footer.xaml;View\UserControls\MenuBar.xaml;
+MainWindow.xaml;View\AddNewLiftType.xaml;View\UserControls\DataEditor.xaml;View\UserControls\DataPlot.xaml;View\UserControls\Footer.xaml;View\UserControls\MenuBar.xaml;
 
-False
+True
 
