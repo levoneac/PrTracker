@@ -54,7 +54,7 @@
                                   IsEditable="False" IsReadOnly="True" IsEnabled="{Binding SelectedItem.IsNew, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Button Grid.Column="1" Content="+"
-                                    Command="{Binding AddNewLiftTypeCommand}"/>
+                                    Command="{Binding OpenNewLiftWindowCommand}"/>
                         </Grid>
 
                         <!-- <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/> -->

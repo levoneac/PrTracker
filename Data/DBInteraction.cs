@@ -32,6 +32,7 @@ namespace PrTracker.Data
         public DBInteraction(LiftContext db)
         {
             dB = db;
+            //1 month later: what?
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             liftToMuscleGroupRelations.SetLiftToMuscleGroup(GetLiftToMuscleGroupRelations());
             liftToMuscleGroupRelations.SetLiftToLiftFK(GetLiftToLliftFKRelations());

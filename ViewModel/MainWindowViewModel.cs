@@ -12,6 +12,7 @@ using OxyPlot.Axes;
 using PrTracker.Graph;
 using PrTracker.EventArguments;
 using static PrTracker.Graph.LiftGraph;
+using PrTracker.View;
 
 namespace PrTracker.ViewModel
 {
@@ -25,6 +26,8 @@ namespace PrTracker.ViewModel
         ObservableCollection<KeyValuePair<int, string>> ExistingLifts { get; set; }
         ObservableCollection<KeyValuePair<int, string>> ExistingMuscleGroups { get; set; }
         public string SelectedLift {  get; set; }
+
+        AddNewLiftType? NewLiftWindow { get; set; }
     }
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
@@ -73,6 +76,8 @@ namespace PrTracker.ViewModel
         public RelayCommand AddCommand => new RelayCommand(execute => AddItem()); //, canExecute => { return true; });
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteItem(), canExecute => selectedItem != null);
         public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
+        public RelayCommand OpenNewLiftWindowCommand => new RelayCommand(execute => OpenNewLiftWindow(), canExecute => CanOpenNewLiftWindow());
+        public RelayCommand AddNewLiftCommand => new RelayCommand(execute => AddNewLift(), canExecute => CanAddNewLift());
 
 
         private ShownLiftData selectedItem;
@@ -136,6 +141,21 @@ namespace PrTracker.ViewModel
             }
         }
 
+        private AddNewLiftType? newLiftWindow;
+        public AddNewLiftType NewLiftWindow
+        {
+            get { return newLiftWindow; }
+            set
+            {
+                if(newLiftWindow is not null)
+                {
+                    newLiftWindow.Close();
+                }
+                newLiftWindow = value;
+                newLiftWindow.Show();
+            }
+        }
+
 
         private PlotModel liftModel;
 
@@ -157,6 +177,8 @@ namespace PrTracker.ViewModel
             private set { cControl = value; }
         }
 
+        public MainWindowViewModel ThisContext { get; set; }
+
 
 
         private readonly DBInteraction dbi;
@@ -165,6 +187,7 @@ namespace PrTracker.ViewModel
 
         public MainWindowViewModel(DBInteraction DBi)
         {
+            ThisContext = this;
             dbi = DBi;
 
             ExistingLiftsValues = new ObservableCollection<string>();
@@ -260,7 +283,7 @@ namespace PrTracker.ViewModel
         {
             if (!dbi.DeleteSelectedLift(selectedItem))
             {
-                Trace.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRROOR");
+                Trace.WriteLine("ERR");
             }
             dbi.dB.SaveChanges();
             MainLiftView.Remove(selectedItem);
@@ -271,7 +294,7 @@ namespace PrTracker.ViewModel
 
             if (!dbi.SaveNewRecordedLifts(MainLiftView))
             {
-                Trace.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRROOR");
+                Trace.WriteLine("ERR");
             }
             dbi.dB.SaveChanges();
             SelectedItem = SelectedItem; //updates the property so that the UI greys out the already selected item after saving
@@ -285,8 +308,34 @@ namespace PrTracker.ViewModel
             return true;
         }
 
+        private void OpenNewLiftWindow()
+        {
+            NewLiftWindow = new AddNewLiftType(ThisContext);
+        }
 
- 
+        private bool CanOpenNewLiftWindow()
+        {
+            AddNewLiftType window = NewLiftWindow;
+            if(window is null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private void AddNewLift()
+        {
+
+        }
+
+        private bool CanAddNewLift()
+        {
+            return true;
+        }
+
+
+
 
     }
 }
