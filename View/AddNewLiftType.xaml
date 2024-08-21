@@ -5,28 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PrTracker.View"
         mc:Ignorable="d"
-        Title="AddNewLiftType" Height="200" Width="450">
+        Title="AddNewLiftType" Height="250" Width="450">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="{Binding XXX}" FontSize="20" />
+        <TextBlock Grid.Row="0" Text="Adding new lifttype" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <Label Content="Name"/>
+            <TextBox Text="{Binding NewLiftName, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
             <Label Content="Primary muscle group" />
             <ComboBox ItemsSource="{Binding ExistingMuscleGroups}"
                       SelectedItem="{Binding SelectedMuscleGroup.Primary, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                       IsEditable="False" IsReadOnly="True"/>
         </StackPanel>
-        <StackPanel Grid.Row="2">
+        <StackPanel Grid.Row="3">
             <Label Content="Secondary muscle group" />
             <ComboBox ItemsSource="{Binding ExistingMuscleGroups}"
                       SelectedItem="{Binding SelectedMuscleGroup.Secondary, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                       IsEditable="False" IsReadOnly="True"/>
         </StackPanel>
-        <Button Grid.Row="3" Width="100" Height="30" Margin="10"
+        <Button Grid.Row="4" Width="100" Height="Auto" Margin="3"
                 HorizontalAlignment="Center" VerticalAlignment="Bottom"
                 Content="Save" Command="{Binding AddNewLiftCommand}"/>
     </Grid>

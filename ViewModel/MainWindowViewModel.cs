@@ -141,6 +141,18 @@ namespace PrTracker.ViewModel
             }
         }
 
+        private string newLiftName;
+
+        public string NewLiftName
+        {
+            get { return newLiftName; }
+            set { 
+                newLiftName = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private AddNewLiftType? newLiftWindow;
         public AddNewLiftType NewLiftWindow
         {
@@ -315,22 +327,26 @@ namespace PrTracker.ViewModel
 
         private bool CanOpenNewLiftWindow()
         {
-            AddNewLiftType window = NewLiftWindow;
-            if(window is null)
+            AddNewLiftType? window = NewLiftWindow;
+            if(window?.IsVisible == true)
             {
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
 
         private void AddNewLift()
         {
-
+            //add to db
+            //update the list of avaliable lifts
+            NewLiftWindow.Close();
         }
 
         private bool CanAddNewLift()
         {
+            //if all fields are filled
+            //dont need input check for liftname, as i expect the user to have a specific intention with their naming
             return true;
         }
 
