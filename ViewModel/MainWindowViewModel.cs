@@ -191,6 +191,19 @@ namespace PrTracker.ViewModel
 
         public MainWindowViewModel ThisContext { get; set; }
 
+        private MuscleGroups selectedMuscleGroup;
+
+        public MuscleGroups SelectedMuscleGroup
+        {
+            get { return selectedMuscleGroup; }
+            set 
+            { 
+                selectedMuscleGroup = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
 
         private readonly DBInteraction dbi;
@@ -202,6 +215,7 @@ namespace PrTracker.ViewModel
             ThisContext = this;
             dbi = DBi;
 
+            SelectedMuscleGroup = new MuscleGroups();
             ExistingLiftsValues = new ObservableCollection<string>();
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             MainLiftView = dbi.GetShownLiftData();
@@ -341,12 +355,14 @@ namespace PrTracker.ViewModel
             //add to db
             //update the list of avaliable lifts
             NewLiftWindow.Close();
+            //SelectedItem.LiftName = NewLiftName;
         }
 
         private bool CanAddNewLift()
         {
             //if all fields are filled
             //dont need input check for liftname, as i expect the user to have a specific intention with their naming
+            Trace.WriteLine(SelectedMuscleGroup.Primary);
             return true;
         }
 
