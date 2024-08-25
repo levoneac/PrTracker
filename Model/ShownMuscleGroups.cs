@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrTracker.Model
 {
-    public class MuscleGroups : ViewModelBase
+    public class ShownMuscleGroups : ViewModelBase
     {
 		private string? primary;
 
@@ -16,7 +16,7 @@ namespace PrTracker.Model
 			get {
                 if (primary is null)
                 {
-                    return "None";
+                    return "";
                 }
                 return primary;
             }
@@ -33,7 +33,7 @@ namespace PrTracker.Model
 			get { 
 				if(secondary is null)
 				{
-					return "None";
+					return "";
 				}
 				return secondary;
 			}

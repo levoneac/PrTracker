@@ -16,21 +16,7 @@ using PrTracker.View;
 
 namespace PrTracker.ViewModel
 {
-    public interface IMainWindowViewModel
-    {
-        RelayCommand AddCommand { get; }
-        RelayCommand DeleteCommand { get; }
-        ObservableCollection<ShownLiftData> MainLiftView { get; set; }
-        RelayCommand SaveCommand { get; }
-        ShownLiftData SelectedItem { get; set; }
-        ObservableCollection<KeyValuePair<int, string>> ExistingLifts { get; set; }
-        ObservableCollection<KeyValuePair<int, string>> ExistingMuscleGroups { get; set; }
-        public string SelectedLift {  get; set; }
-
-        AddNewLiftType? NewLiftWindow { get; set; }
-    }
-
-    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
+    public class MainWindowViewModel : ViewModelBase
     {
         public event EventHandler<GraphCategoryChangeArgs> GraphCategoryChangeEvent;
 
@@ -87,9 +73,28 @@ namespace PrTracker.ViewModel
             set
             {
                 selectedItem = value;
+                AllowEdit = selectedItem?.IsNew;
                 OnPropertyChanged();
             }
         }
+
+        private bool allowEdit;
+
+        public bool? AllowEdit
+        {
+            get { return allowEdit; }
+            set { 
+                if(value is null || value == false)
+                {
+                    allowEdit = false;
+                } else
+                {
+                    allowEdit = true;
+                }
+                OnPropertyChanged();
+            }
+        }
+
 
         private ObservableCollection<KeyValuePair<int, string>> existingLifts;
 
@@ -116,9 +121,9 @@ namespace PrTracker.ViewModel
         }
 
 
-        private ObservableCollection<KeyValuePair<int, string>> existingMuscleGroups;
+        private ObservableCollection<string> existingMuscleGroups;
 
-        public ObservableCollection<KeyValuePair<int, string>> ExistingMuscleGroups
+        public ObservableCollection<string> ExistingMuscleGroups
         {
             get { return existingMuscleGroups; }
             set 
@@ -146,8 +151,14 @@ namespace PrTracker.ViewModel
         public string NewLiftName
         {
             get { return newLiftName; }
-            set { 
-                newLiftName = value;
+            set {
+                if (value.Length > 0)
+                {
+                    newLiftName = value[0].ToString().ToUpper() + value[1..].ToLower();
+                } else
+                {
+                    newLiftName = value;
+                }
                 OnPropertyChanged();
             }
         }
@@ -191,9 +202,9 @@ namespace PrTracker.ViewModel
 
         public MainWindowViewModel ThisContext { get; set; }
 
-        private MuscleGroups selectedMuscleGroup;
+        private ShownMuscleGroups selectedMuscleGroup;
 
-        public MuscleGroups SelectedMuscleGroup
+        public ShownMuscleGroups SelectedMuscleGroup
         {
             get { return selectedMuscleGroup; }
             set 
@@ -215,7 +226,7 @@ namespace PrTracker.ViewModel
             ThisContext = this;
             dbi = DBi;
 
-            SelectedMuscleGroup = new MuscleGroups();
+            SelectedMuscleGroup = new ShownMuscleGroups();
             ExistingLiftsValues = new ObservableCollection<string>();
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             MainLiftView = dbi.GetShownLiftData();
@@ -255,7 +266,9 @@ namespace PrTracker.ViewModel
         public void UpdateInfoFromDatabase()
         {
             ExistingLifts = dbi.GetExistingLiftTypes();
-            ExistingLifts.ToList().ForEach(i => ExistingLiftsValues.Add(i.Value));
+            ExistingLiftsValues = new ObservableCollection<string>(ExistingLifts.Select(i => i.Value));
+            ExistingLifts.ToList().ForEach(i => Trace.WriteLine(i));
+
             ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
         }
 
@@ -309,9 +322,8 @@ namespace PrTracker.ViewModel
         {
             if (!dbi.DeleteSelectedLift(selectedItem))
             {
-                Trace.WriteLine("ERR");
+                Trace.WriteLine("ERR: delete lift");
             }
-            dbi.dB.SaveChanges();
             MainLiftView.Remove(selectedItem);
         }
 
@@ -320,9 +332,8 @@ namespace PrTracker.ViewModel
 
             if (!dbi.SaveNewRecordedLifts(MainLiftView))
             {
-                Trace.WriteLine("ERR");
+                Trace.WriteLine("ERR: save lift");
             }
-            dbi.dB.SaveChanges();
             SelectedItem = SelectedItem; //updates the property so that the UI greys out the already selected item after saving
             
         }
@@ -352,7 +363,11 @@ namespace PrTracker.ViewModel
 
         private void AddNewLift()
         {
-            //add to db
+            if(!dbi.SaveNewLiftType(SelectedMuscleGroup, NewLiftName))
+            {
+                Trace.WriteLine("ERR: save lift type");
+            }
+            
             //update the list of avaliable lifts
             NewLiftWindow.Close();
             //SelectedItem.LiftName = NewLiftName;
@@ -362,7 +377,18 @@ namespace PrTracker.ViewModel
         {
             //if all fields are filled
             //dont need input check for liftname, as i expect the user to have a specific intention with their naming
-            Trace.WriteLine(SelectedMuscleGroup.Primary);
+            if(NewLiftName is null || NewLiftName == "" || NewLiftName.StartsWith(" "))
+            {
+                return false;
+            }
+            if(SelectedMuscleGroup.Primary is null || SelectedMuscleGroup.Secondary is null)
+            {
+                return false;
+            }
+            if (SelectedMuscleGroup.Primary == "" || SelectedMuscleGroup.Secondary == "")
+            {
+                return false;
+            }
             return true;
         }
 

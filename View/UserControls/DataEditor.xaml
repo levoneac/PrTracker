@@ -51,7 +51,7 @@
                             </Grid.ColumnDefinitions>
                             <ComboBox ItemsSource="{Binding ExistingLiftsValues, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                   SelectedItem="{Binding SelectedItem.LiftName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                  IsEditable="False" IsReadOnly="True" IsEnabled="{Binding SelectedItem.IsNew, UpdateSourceTrigger=PropertyChanged}"/>
+                                  IsEditable="False" IsReadOnly="True" IsEnabled="{Binding AllowEdit, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Button Grid.Column="1" Content="+"
                                     Command="{Binding OpenNewLiftWindowCommand}"/>
@@ -60,21 +60,21 @@
                         <!-- <TextBox Text="{Binding SelectedItem.MuscleGroupName, UpdateSourceTrigger=PropertyChanged}"/> -->
                         <Label Content="Weight"/>
                         <TextBox Text="{Binding SelectedItem.Weight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                 IsEnabled="{Binding SelectedItem.IsNew, UpdateSourceTrigger=PropertyChanged}"/>
+                                 IsEnabled="{Binding AllowEdit, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Content="Reps"/>
                         <TextBox Text="{Binding SelectedItem.Reps, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                 IsEnabled="{Binding SelectedItem.IsNew, UpdateSourceTrigger=PropertyChanged}"/>
+                                 IsEnabled="{Binding AllowEdit, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Content="Date"/>
                         <DatePicker SelectedDateFormat="Short" FirstDayOfWeek="Monday"
                                     Text="{Binding SelectedItem.Date, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                    IsEnabled="{Binding SelectedItem.IsNew, UpdateSourceTrigger=PropertyChanged}"/>
+                                    IsEnabled="{Binding AllowEdit, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </ScrollViewer>
 
 
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Margin="1">
-                        <Button Content="Add" Width="50" Height="15" FontSize="10"
+                        <Button Content="Create" Width="50" Height="15" FontSize="10"
                                 Command="{Binding AddCommand}"/>
                         <Button Content="Delete" Width="50" Height="15" FontSize="10"
                                 Command="{Binding DeleteCommand}"/>

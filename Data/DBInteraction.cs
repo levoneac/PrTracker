@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrTracker.Helpers;
-using PrTracker.Migrations;
 using PrTracker.Model;
 using PrTracker.Models;
 using System;
@@ -32,19 +31,25 @@ namespace PrTracker.Data
         public DBInteraction(LiftContext db)
         {
             dB = db;
-            //1 month later: what?
+
+            //Get singleton and give it neccesary data
             liftToMuscleGroupRelations = LiftRelationConversions.GetLiftToMuscleGroupRelations();
             liftToMuscleGroupRelations.SetLiftToMuscleGroup(GetLiftToMuscleGroupRelations());
             liftToMuscleGroupRelations.SetLiftToLiftFK(GetLiftToLliftFKRelations());
             LiftTable = dB.Lifts.ToList();
         }
 
-        public ObservableCollection<KeyValuePair<int, string>> GetExistingMuscleGroups()
+        public ObservableCollection<string> GetExistingMuscleGroups()
         {
-            ObservableCollection<KeyValuePair<int, string>> data = new ObservableCollection<KeyValuePair<int, string>>();
+            //ObservableCollection<KeyValuePair<int, string>> data = new ObservableCollection<KeyValuePair<int, string>>();
+            //dB.MuscleGroups.ToList()
+            //    .ForEach(i => data.Add(new KeyValuePair<int, string>(i.Id, i.PrimaryMuscleGroup)));
+            //return data;
+            ObservableCollection<string> data = new ObservableCollection<string>();
             dB.MuscleGroups.ToList()
-                .ForEach(i => data.Add(new KeyValuePair<int, string>(i.Id, i.PrimaryMuscleGroup)));
+                .ForEach(i => data.Add(i.PrimaryMuscleGroup));
             return data;
+
         }
 
         public ObservableCollection<KeyValuePair<int, string>> GetExistingLiftTypes()
@@ -160,6 +165,7 @@ namespace PrTracker.Data
             {
                 lift.IsNew = false;
             }
+            dB.SaveChanges();
             //static events should have null as the sender
             DbUpdateEvent?.Invoke(null, "DATA SAVED");
             return true;
@@ -173,6 +179,29 @@ namespace PrTracker.Data
             RecordedLifts liftToDelete = findToDelete.First();
 
             dB.RecordedLifts.Remove(liftToDelete);
+            dB.SaveChanges();
+            DbUpdateEvent?.Invoke(null, "LIFT DELETED");
+            return true;
+        }
+
+        public bool SaveNewLiftType(ShownMuscleGroups muscleGroups, string name)
+        {
+            MuscleGroups? findRefPrimary = dB.MuscleGroups.Where(i => i.PrimaryMuscleGroup == muscleGroups.Primary)?.First();
+            MuscleGroups? findRefSecondary = dB.MuscleGroups.Where(i => i.PrimaryMuscleGroup == muscleGroups.Secondary)?.First();
+            if(findRefPrimary is null || findRefSecondary is null)
+            {
+                return false;
+            }
+
+            dB.Lifts.Add(new Lifts
+            {
+                LiftName = name,
+                PrimaryMuscleGroupId = findRefPrimary,
+                SecondaryMuscleGroupId =findRefSecondary,
+            });
+
+            dB.SaveChanges();
+            DbUpdateEvent?.Invoke(null, "MUSCLEGROUP ADDED");
             return true;
         }
     }

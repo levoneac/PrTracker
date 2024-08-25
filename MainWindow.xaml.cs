@@ -9,7 +9,7 @@ namespace PrTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(IMainWindowViewModel vm)
+        public MainWindow(MainWindowViewModel vm)
         {
             InitializeComponent();
             //MainWindowViewModel vm = new MainWindowViewModel();

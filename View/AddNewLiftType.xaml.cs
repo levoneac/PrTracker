@@ -20,7 +20,7 @@ namespace PrTracker.View
     /// </summary>
     public partial class AddNewLiftType : Window
     {
-        public AddNewLiftType(IMainWindowViewModel vm)
+        public AddNewLiftType(MainWindowViewModel vm)
         {
             InitializeComponent();
 

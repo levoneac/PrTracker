@@ -17,7 +17,7 @@
         <TextBlock Grid.Row="0" Text="Adding new lifttype" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
             <Label Content="Name"/>
-            <TextBox Text="{Binding NewLiftName, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+            <TextBox Text="{Binding NewLiftName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
             <Label Content="Primary muscle group" />
