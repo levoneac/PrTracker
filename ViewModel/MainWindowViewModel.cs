@@ -222,6 +222,8 @@ namespace PrTracker.ViewModel
         private readonly LiftGraph Graph;
 
         public MainWindowViewModel(DBInteraction DBi)
+            //TODO:
+                //Check if collections have any new elements before updating anything (like ORM calculations)
         {
             ThisContext = this;
             dbi = DBi;

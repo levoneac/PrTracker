@@ -76,10 +76,28 @@ namespace PrTracker.Graph
                 {
 
                 };
+
+                SortedDictionary<DateTime, double> maxOnDate = new SortedDictionary<DateTime, double>();
+                double oneRepMax;
+                DateTime day;
                 foreach (ShownLiftData lift in data)
                 {
-                    double oneRepMax = CalculateOneRepMax((double)lift.Weight, lift.Reps);
-                    lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(lift.Date), oneRepMax));
+                    oneRepMax = CalculateOneRepMax((double)lift.Weight, lift.Reps);
+                    day = lift.Date.Date;
+                    if (maxOnDate.TryGetValue(day, out double weight))
+                    {
+                        if(oneRepMax > weight)
+                        {
+                            maxOnDate[day] = oneRepMax;
+                        }
+                    } else
+                    {
+                        maxOnDate[day] = oneRepMax;
+                    }
+                }
+                foreach (KeyValuePair<DateTime, double> max in maxOnDate)
+                {
+                    lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(max.Key), max.Value));
                 }
                 newModel.Series.Add(lineSeries);
 
