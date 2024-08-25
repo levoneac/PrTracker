@@ -36,7 +36,7 @@ namespace PrTracker.Graph
 
 
         
-        public PlotModel MakeLiftModel(GraphType type, string liftName)
+        public PlotModel MakeLiftModel(GraphType type, string liftName, bool strictlyIncreasing)
         {
             PlotModel newModel = new PlotModel();
             IEnumerable<ShownLiftData> data = GroupedLiftDataByName[liftName];
@@ -72,10 +72,7 @@ namespace PrTracker.Graph
             }
             else if (type == GraphType.OneRepMax)
             {
-                LineSeries lineSeries = new LineSeries()
-                {
-
-                };
+                LineSeries lineSeries = new LineSeries();
 
                 SortedDictionary<DateTime, double> maxOnDate = new SortedDictionary<DateTime, double>();
                 double oneRepMax;
@@ -95,10 +92,28 @@ namespace PrTracker.Graph
                         maxOnDate[day] = oneRepMax;
                     }
                 }
-                foreach (KeyValuePair<DateTime, double> max in maxOnDate)
+                if (strictlyIncreasing)
                 {
-                    lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(max.Key), max.Value));
+                    double previousHighest = 0;
+                    foreach (KeyValuePair<DateTime, double> max in maxOnDate)
+                    {
+                        if(previousHighest > max.Value)
+                        {
+                            lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(max.Key), previousHighest));
+                        }else
+                        {
+                            lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(max.Key), max.Value));
+                            previousHighest = max.Value;
+                        }
+                    }
+                } else
+                {
+                    foreach (KeyValuePair<DateTime, double> max in maxOnDate)
+                    {
+                        lineSeries.Points.Add(new DataPoint(DateTimeAxis.ToDouble(max.Key), max.Value));
+                    }
                 }
+
                 newModel.Series.Add(lineSeries);
 
                 newModel.Axes.Add(new DateTimeAxis

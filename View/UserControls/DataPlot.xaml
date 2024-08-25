@@ -14,9 +14,9 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="60*"/>
+                <ColumnDefinition Width="20*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
@@ -32,6 +32,10 @@
                     <CheckBox Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center"
                               IsChecked="{Binding IsOneRepMax, Mode=TwoWay}"/>
                     <TextBlock Text="Estimated 1RM" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <CheckBox Margin="15,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding IsStrictlyIncreasing, Mode=TwoWay}" Visibility="{Binding StrictlyIncreasingVisibility}"/>
+                    <TextBlock Text="Only improvements" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Visibility="{Binding StrictlyIncreasingVisibility}"/>
                 </StackPanel>
             </Grid>
         </Grid>

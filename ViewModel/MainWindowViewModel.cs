@@ -13,6 +13,7 @@ using PrTracker.Graph;
 using PrTracker.EventArguments;
 using static PrTracker.Graph.LiftGraph;
 using PrTracker.View;
+using System.Windows;
 
 namespace PrTracker.ViewModel
 {
@@ -29,9 +30,24 @@ namespace PrTracker.ViewModel
             { 
                 isOneRepMax = value;
                 OnPropertyChanged();
-                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift));
+                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift, IsStrictlyIncreasing));
             }
         }
+
+
+        private bool isStrictlyIncreasing;
+
+        public bool IsStrictlyIncreasing
+        {
+            get { return isStrictlyIncreasing; }
+            set
+            {
+                isStrictlyIncreasing = value;
+                OnPropertyChanged();
+                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift, IsStrictlyIncreasing));
+            }
+        }
+
 
         private string graphCurrentSelectedLift = "Deadlift";
 
@@ -42,7 +58,7 @@ namespace PrTracker.ViewModel
             { 
                 graphCurrentSelectedLift = value;
                 OnPropertyChanged();
-                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift));
+                GraphCategoryChangeEvent?.Invoke(this, new GraphCategoryChangeArgs(IsOneRepMax, GraphCurrentSelectedLift, IsStrictlyIncreasing));
             }
         }
 
@@ -214,6 +230,18 @@ namespace PrTracker.ViewModel
             }
         }
 
+        private Visibility strictlyIncreasingVisibility;
+
+        public Visibility StrictlyIncreasingVisibility
+        {
+            get { return strictlyIncreasingVisibility; }
+            set { 
+                strictlyIncreasingVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
 
 
@@ -224,8 +252,6 @@ namespace PrTracker.ViewModel
         public MainWindowViewModel(DBInteraction DBi)
             //TODO:
                 //Check if collections have any new elements before updating anything (like ORM calculations)
-                //Keep old selected lift type when creating new
-                //you have to repress the date for it to change in the picker, resulting in confusion
         {
             ThisContext = this;
             dbi = DBi;
@@ -241,16 +267,23 @@ namespace PrTracker.ViewModel
             CControl = Graph.InteractionController;
             Graph.UpdateData(MainLiftView);
             GraphCategoryChangeEvent += Handle_GraphCategoryChangeEvent;
-            LiftModel = Graph.MakeLiftModel(GraphType.AllLifts, GraphCurrentSelectedLift);
-
+            LiftModel = Graph.MakeLiftModel(GraphType.AllLifts, GraphCurrentSelectedLift, IsStrictlyIncreasing);
+            StrictlyIncreasingVisibility = Visibility.Hidden;
         }
 
-        //Maybe this doesnt need to be an event, but make code feel more intuitive
+        //Maybe this doesnt need to be an event, but makes code feel more intuitive imo
         private void Handle_GraphCategoryChangeEvent(object? sender, GraphCategoryChangeArgs e)
         {
+            if (e.IsOneRepMax)
+            {
+                StrictlyIncreasingVisibility = Visibility.Visible;
+            }
+            else
+            {
+                StrictlyIncreasingVisibility = Visibility.Hidden;
+            }
             GraphType graphType = GetLiftGraphType(e.IsOneRepMax);
-
-            LiftModel = Graph.MakeLiftModel(graphType, e.LiftName);
+            LiftModel = Graph.MakeLiftModel(graphType, e.LiftName, e.IsStrictlyIncreasing);
         }
 
         private GraphType GetLiftGraphType(bool isOneRepMax)
@@ -284,7 +317,7 @@ namespace PrTracker.ViewModel
 
             //A lot of double work here. Look into later
             Graph.UpdateData(MainLiftView);
-            LiftModel = Graph.MakeLiftModel(GetLiftGraphType(IsOneRepMax), GraphCurrentSelectedLift);
+            LiftModel = Graph.MakeLiftModel(GetLiftGraphType(IsOneRepMax), GraphCurrentSelectedLift, IsStrictlyIncreasing);
             Trace.WriteLine("UI UPDATED");
         }
 
@@ -292,7 +325,14 @@ namespace PrTracker.ViewModel
         {
             string liftName;
             int liftNameFK;
-            if(ExistingLifts.Count <= 0)
+            DateTime date = DateTime.Now;
+            if(SelectedItem != null)
+            {
+                liftName = SelectedItem.LiftName;
+                liftNameFK = SelectedItem.LiftNameFK;
+                date = SelectedItem.Date;
+            }
+            else if(ExistingLifts.Count <= 0)
             {
                 liftName = "Deadlift";
                 liftNameFK = 1;
@@ -315,7 +355,7 @@ namespace PrTracker.ViewModel
                 Reps = 0,
                 PrimaryMuscleGroup = muscleGroups.Key,
                 SecondaryMuscleGroup = muscleGroups.Value,
-                Date = DateTime.Now,
+                Date = date,
                 IsNew = true,
             };
             

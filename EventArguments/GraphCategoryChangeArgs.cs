@@ -10,10 +10,12 @@ namespace PrTracker.EventArguments
     {
         public bool IsOneRepMax { get; private set; }
         public string LiftName { get; private set; }
-        public GraphCategoryChangeArgs(bool isOneRepMax, string liftName)
+        public bool IsStrictlyIncreasing { get; private set; }
+        public GraphCategoryChangeArgs(bool isOneRepMax, string liftName, bool isStrictlyIncreasing)
         {
             IsOneRepMax = isOneRepMax;
             LiftName = liftName;
+            IsStrictlyIncreasing = isStrictlyIncreasing;
         }
     }
 }
