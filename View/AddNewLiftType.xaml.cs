@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrTracker.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,11 @@ namespace PrTracker.View
     /// </summary>
     public partial class AddNewLiftType : Window
     {
-        public AddNewLiftType()
+        public AddNewLiftType(MainWindowViewModel vm)
         {
             InitializeComponent();
+
+            DataContext = vm;
         }
     }
 }

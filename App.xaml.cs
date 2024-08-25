@@ -23,7 +23,7 @@ namespace PrTracker
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton<IMainWindowViewModel, MainWindowViewModel>();
+                    services.AddSingleton<MainWindowViewModel>();
                     services.AddSingleton<LiftContext>();
                     services.AddSingleton<DBInteraction>();
                     services.AddSingleton<LiftRelationConversions>();                

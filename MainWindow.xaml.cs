@@ -9,11 +9,17 @@ namespace PrTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(IMainWindowViewModel vm)
+        public MainWindow(MainWindowViewModel vm)
         {
             InitializeComponent();
             //MainWindowViewModel vm = new MainWindowViewModel();
             DataContext = vm;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
         }
     }
 }
