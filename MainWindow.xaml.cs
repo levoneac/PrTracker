@@ -15,5 +15,11 @@ namespace PrTracker
             //MainWindowViewModel vm = new MainWindowViewModel();
             DataContext = vm;
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+        }
     }
 }

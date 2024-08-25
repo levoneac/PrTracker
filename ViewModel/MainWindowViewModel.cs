@@ -267,6 +267,7 @@ namespace PrTracker.ViewModel
         {
             ExistingLifts = dbi.GetExistingLiftTypes();
             ExistingLiftsValues = new ObservableCollection<string>(ExistingLifts.Select(i => i.Value));
+
             ExistingLifts.ToList().ForEach(i => Trace.WriteLine(i));
 
             ExistingMuscleGroups = dbi.GetExistingMuscleGroups();
@@ -340,8 +341,7 @@ namespace PrTracker.ViewModel
 
         private bool CanSave()
         {
-            //is db connected?
-            //is usser authenticated to save?
+            //check if there are any new lifts
             return true;
         }
 
@@ -367,10 +367,7 @@ namespace PrTracker.ViewModel
             {
                 Trace.WriteLine("ERR: save lift type");
             }
-            
-            //update the list of avaliable lifts
             NewLiftWindow.Close();
-            //SelectedItem.LiftName = NewLiftName;
         }
 
         private bool CanAddNewLift()
@@ -386,6 +383,11 @@ namespace PrTracker.ViewModel
                 return false;
             }
             if (SelectedMuscleGroup.Primary == "" || SelectedMuscleGroup.Secondary == "")
+            {
+                return false;
+            }
+            int exists = ExistingLiftsValues.IndexOf(NewLiftName);
+            if(exists != -1)
             {
                 return false;
             }

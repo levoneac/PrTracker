@@ -201,6 +201,11 @@ namespace PrTracker.Data
             });
 
             dB.SaveChanges();
+
+            liftToMuscleGroupRelations.SetLiftToMuscleGroup(GetLiftToMuscleGroupRelations());
+            liftToMuscleGroupRelations.SetLiftToLiftFK(GetLiftToLliftFKRelations());
+            LiftTable = dB.Lifts.ToList();
+
             DbUpdateEvent?.Invoke(null, "MUSCLEGROUP ADDED");
             return true;
         }
