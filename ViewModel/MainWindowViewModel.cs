@@ -224,6 +224,8 @@ namespace PrTracker.ViewModel
         public MainWindowViewModel(DBInteraction DBi)
             //TODO:
                 //Check if collections have any new elements before updating anything (like ORM calculations)
+                //Keep old selected lift type when creating new
+                //you have to repress the date for it to change in the picker, resulting in confusion
         {
             ThisContext = this;
             dbi = DBi;
